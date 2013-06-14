@@ -1,0 +1,53 @@
+
+#configure backend preview
+plugin.tx_comvosserptool{
+    pages{
+        tx_comvosserptool_metatitle{
+            postfix =  [SPACE]- Site name
+        }
+        title{
+            postfix =  [SPACE]- Site name
+        }
+    }
+}
+
+#configure frontend meta output
+page {
+    
+    headerData {
+        #title
+        3 = TEXT
+        3 {
+            stdWrap.cObject = COA
+
+            stdWrap.cObject.10=TEXT
+            stdWrap.cObject.10.data = TSFE:page|title
+
+            noTrimWrap = |<title>| - Site name</title>|
+        }
+        # meta title
+        4 = TEXT
+        4 {
+            stdWrap.cObject = COA
+            #use new field by default
+            stdWrap.cObject.10=TEXT
+            stdWrap.cObject.10.data = TSFE:page|tx_comvosserptool_metatitle
+
+            #fallback to pagetitle
+            stdWrap.cObject.20=TEXT
+            stdWrap.cObject.20.data = TSFE:page|title
+            stdWrap.cObject.20.if.isFalse=TEXT
+            stdWrap.cObject.20.if.isFalse.data = TSFE:page|tx_comvosserptool_metatitle
+
+            noTrimWrap = |<meta name="title" content="| - Site name" />|
+        }
+        #description if given
+        5 = TEXT
+        5 {
+            if.isTrue=TEXT
+            if.isTrue.data = TSFE:page|description 
+            data = TSFE:page|description
+            noTrimWrap = |<meta name="description" content="|"/>|
+        }
+    }
+}
