@@ -32,6 +32,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'version' => '1.0.0',
 	'constraints' => array(
 		'depends' => array(
+			'seo_basics' => '',
 		),
 		'conflicts' => array(
 		),

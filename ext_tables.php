@@ -1,55 +1,28 @@
 <?php
-
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
+if (! defined('TYPO3_MODE')) {
+	die('Access denied.');
 }
 
-
-
-t3lib_div::loadTCA('pages');
+if (version_compare(TYPO3_branch, '6.1', '<')) {
+	\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('pages');
+}
 $GLOBALS['TCA']['pages']['columns']['description']['config']['wizards'] = array(
-    'SERPWizard' => array(
-        'type' => 'userFunc',
-        'userFunc' => 'EXT:comvosserptool/Classes/tx_comvosserptool_SERPWizard.php:tx_comvosserptool_SERPWizard->SERPWizard',
-        'params' => array(
-            'emptyValue' => 'No description!'
-        )
-        ));
-$GLOBALS['TCA']['pages']['columns']['title']['config']['wizards'] = array(
-    'SERPWizard' => array(
-        'type' => 'userFunc',
-        'userFunc' => 'EXT:comvosserptool/Classes/tx_comvosserptool_SERPWizard.php:tx_comvosserptool_SERPWizard->SERPWizard',
-        'params' => array(
-            'previewSelector' => '.srs-title',
-            'overrideWithSelector' => 'input[name*=\\\[tx_comvosserptool_metatitle\\\]]',
-            'maxLength' => 70,
-            'emptyValue' => 'No title!'
-        )
-        ));
-
-
-$tempColumns = array(
-    'tx_comvosserptool_metatitle' => array(
-        'exclude' => 1,
-        'label' => 'LLL:EXT:comvosserptool/locallang_db.xml:pages.tx_comvosserptool_metatitle',
-        'config' => array(
-            'type' => 'input',
-            'size' => '30',
-            'wizards' => array(
-                'SERPWizard' => array(
-                    'type' => 'userFunc',
-                    'userFunc' => 'EXT:comvosserptool/Classes/tx_comvosserptool_SERPWizard.php:tx_comvosserptool_SERPWizard->SERPWizard',
-                    'params' => array(
-                        'fallbackFieldSelector' =>'input[name*=\\\[title\\\]]',
-                        'previewSelector' => '.srs-title',
-                        'maxLength' => 70,
-                        'emptyValue' => 'No title!'
-                    )
-                )
-            )
-        )
-    )
+	'SERPWizard' => array(
+		'type' => 'userFunc',
+		'userFunc' => 'EXT:' . $_EXTKEY . '/Classes/tx_comvosserptool_SERPWizard.php:tx_comvosserptool_SERPWizard->SERPWizard',
+		'params' => array(
+			'emptyValue' => 'No description'
+		)
+	)
 );
-t3lib_extMgm::addTCAcolumns("pages", $tempColumns, 1);
-t3lib_extMgm::addToAllTCAtypes("pages", "tx_comvosserptool_metatitle","","before:description");
+
+$GLOBALS['TCA']['pages']['columns']['title']['config']['wizards']['SERPWizard'] = $GLOBALS['TCA']['pages']['columns']['description']['config']['wizards']['SERPWizard'];
+$GLOBALS['TCA']['pages']['columns']['title']['config']['wizards']['SERPWizard']['params'] = array(
+	'previewSelector' => '.srs-title',
+	'maxLength' => 70,
+	'emptyValue' => 'No title'
+);
+
+$GLOBALS['TCA']['pages']['columns']['tx_seo_titletag']['config']['wizards']['SERPWizard'] = $GLOBALS['TCA']['pages']['columns']['title']['config']['wizards']['SERPWizard'];
+$GLOBALS['TCA']['pages']['columns']['tx_seo_titletag']['config']['wizards']['SERPWizard']['params']['fallbackFieldSelector'] = 'input[name*=\\\[title\\\]]';
 ?>

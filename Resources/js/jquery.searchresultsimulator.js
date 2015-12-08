@@ -15,7 +15,7 @@
             init : function( options ) {
                 var config = {
                     cssFile: '/typo3conf/ext/comvosserptool/Resources/css/searchresultsimulator.css',
-                    previewTemplate: '<div class="srs-preview"><h3><a class="srs-title" href="#">Kein Titel</a></h3><div class="srs-summary"><div class="srs-url"><a href="http://www.comvos.de/suchmaschinenoptimierung.html" target="_blank">http://www.comvos.de/suchmaschinenoptimierung.html</a></div><div class="srs-description"><span class="srs-date"/></div></div></div>',
+                    previewTemplate: '<div class="srs-preview"><h3><a class="srs-title" href="#">Kein Titel</a></h3><div class="srs-summary"><div class="srs-url"><a href="#">http://www.domain.tld/path/to/url/</a></div><div class="srs-description"><span class="srs-date"/></div></div></div>',
                     previewSelector: '.srs-description',
                     maxLength: 156,
                     overlengthIndicator: '...',
@@ -30,7 +30,7 @@
                 if( options ){
                     $.extend( config , options );
                 }
-                config.previewTemplate='<div class="srs-container"><div class="srs-left">'+config.previewTemplate+'</div><div class="srs-right"><a href="http://www.comvos.de/typo3-onsite-seo.html" target="_blank"><img alt="comvos" src="/typo3conf/ext/comvosserptool/ext_icon.gif"/> TYPO3 SERP-Tool by comvos - click here for online help</a></div></div>';
+                config.previewTemplate='<div class="srs-container"><div class="srs-left">'+config.previewTemplate+'</div></div>';
                 if(!jQuery('body').attr('data-srs-cssloaded')){
                     $('head').append('<link rel="stylesheet" href="'+config.cssFile+'" type="text/css" />');
                     jQuery('body').attr('data-srs-cssloaded',true)
@@ -44,7 +44,7 @@
                 if(config.previewTemplate){
                     var $preview = $(config.previewTemplate);
                     if(config.allwaysVisible){
-                        $preview.addClass('srs-allways-visible').appendTo($field.parents('td').first());
+                        $preview.addClass('srs-allways-visible').appendTo($field.parents('div').first());
                     }else{
                         $preview.appendTo('body');
                     }
@@ -96,13 +96,13 @@
                     
                     var countText = previewText.length, explanation='';
                     if(config.prefix.length){
-                        explanation += config.prefix+'['+config.prefix.length+'] ';
+                        explanation += config.prefix+' ['+config.prefix.length+'] ';
                     }
                     if(config.prefix.length || config.postfix.length){
-                        explanation += originalText+'['+originalText.length+']';
+                        explanation += originalText+' ['+originalText.length+']';
                     }
                     if(config.postfix.length){
-                        explanation += ' '+ config.postfix+'['+config.postfix.length+']';
+                        explanation += ' '+ config.postfix+' ['+config.postfix.length+']';
                     }
                     if(explanation.length){
                         explanation = ' (' + explanation + ')';
@@ -147,6 +147,16 @@
                     updateSerpView();
                     $('body').trigger('comvosserptoolchange');
                 }).trigger('keyup');
+                
+                
+                $(window).load(function() {
+                	updateSerpView();
+
+                    $('div.form-control-clearable button.close').click(function(){
+                        updateSerpView();
+                        $('body').trigger('comvosserptoolchange');
+                    });
+                });
             }//init end
         
         
